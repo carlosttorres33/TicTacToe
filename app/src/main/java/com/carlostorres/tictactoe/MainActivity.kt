@@ -10,6 +10,7 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import com.carlostorres.tictactoe.ui.game.GameScreen
 import com.carlostorres.tictactoe.ui.home.HomeScreen
 import com.carlostorres.tictactoe.ui.theme.TicTacToeTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -34,7 +35,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colors.background
                 ) {
-                    HomeScreen()
+                    GameScreen()
                 }
             }
         }
