@@ -10,7 +10,9 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import com.carlostorres.tictactoe.ui.home.HomeScreen
 import com.carlostorres.tictactoe.ui.theme.TicTacToeTheme
+import dagger.hilt.android.AndroidEntryPoint
 
 //Listado de partidas
     //board : List<String> = 9 posiciones
@@ -21,6 +23,7 @@ import com.carlostorres.tictactoe.ui.theme.TicTacToeTheme
     //Player2
     //PlayerTurn
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -31,25 +34,9 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colors.background
                 ) {
-                    Greeting("Android")
+                    HomeScreen()
                 }
             }
         }
-    }
-}
-
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    TicTacToeTheme {
-        Greeting("Android")
     }
 }
