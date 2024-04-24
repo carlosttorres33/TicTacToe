@@ -1,6 +1,5 @@
 package com.carlostorres.tictactoe.ui.home
 
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -22,7 +21,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 @Composable
 fun HomeScreen(
     homeViewModel: HomeViewModel = hiltViewModel(),
-    navigateToGame : () -> Unit
+    navigateToGame : (String, String, Boolean) -> Unit
 ){
 
     Column(
@@ -32,7 +31,7 @@ fun HomeScreen(
 
         Spacer(modifier = Modifier.weight(2f))
 
-        CreateGame { homeViewModel.onCreateGame() }
+        CreateGame { homeViewModel.onCreateGame(navigateToGame) }
 
         Spacer(modifier = Modifier.weight(1f))
         Divider(modifier = Modifier.fillMaxWidth().height(2.dp))
@@ -40,8 +39,8 @@ fun HomeScreen(
 
         JoinGame(
             onValueChange = {},
-            onJoinGame = { id ->
-                homeViewModel.onJoinGame(id)
+            onJoinGame = { gameId ->
+                homeViewModel.onJoinGame(gameId, navigateToGame)
             }
         )
 

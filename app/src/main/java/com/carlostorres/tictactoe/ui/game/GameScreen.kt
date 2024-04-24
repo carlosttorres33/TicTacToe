@@ -18,7 +18,12 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 
 @Composable
-fun GameScreen(){
+fun GameScreen(
+    gameViewModel: GameViewModel = hiltViewModel(),
+    gameId: String,
+    userId: String,
+    owner: Boolean
+){
 
     Board()
 
