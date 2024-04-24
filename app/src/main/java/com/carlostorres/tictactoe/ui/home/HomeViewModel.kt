@@ -14,7 +14,7 @@ class HomeViewModel @Inject constructor(
 
     fun onCreateGame() {
 
-        firebaseService.createGame(createNewGame())
+        val gameId = firebaseService.createGame(createNewGame())
 
     }
 
