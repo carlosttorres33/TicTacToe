@@ -10,6 +10,9 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
+import com.carlostorres.tictactoe.ui.core.ContentWrapper
 import com.carlostorres.tictactoe.ui.game.GameScreen
 import com.carlostorres.tictactoe.ui.home.HomeScreen
 import com.carlostorres.tictactoe.ui.theme.TicTacToeTheme
@@ -26,6 +29,9 @@ import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+
+    private lateinit var navController: NavHostController
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -35,7 +41,10 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colors.background
                 ) {
-                    GameScreen()
+
+                    navController = rememberNavController()
+                    ContentWrapper(navController)
+
                 }
             }
         }
