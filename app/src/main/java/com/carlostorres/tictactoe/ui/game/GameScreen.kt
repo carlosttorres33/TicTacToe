@@ -2,6 +2,7 @@ package com.carlostorres.tictactoe.ui.game
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -21,6 +22,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.carlostorres.tictactoe.ui.model.GameModel
+import com.carlostorres.tictactoe.ui.model.PlayerType
 
 @Composable
 fun GameScreen(
@@ -38,23 +40,30 @@ fun GameScreen(
 
     val game : GameModel? by gameViewModel.game.collectAsState()
 
-    Board(game)
+    Board(game){ position ->
+        gameViewModel.onItemSelected(position)
+    }
 
 }
 
 @Composable
-fun Board(game : GameModel?){
+fun Board(
+    game : GameModel?,
+    onItemSelected : (Int) -> Unit
+){
+
+    if (game == null) return
 
     Column (
         modifier = Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally
     ){
 
-        Text(text = "ID de partida ${game?.gameId.orEmpty()}")
+        Text(text = "ID de partida ${game.gameId.orEmpty()}")
 
-        val status = if (game?.isGameReady == true){
+        val status = if (game.isGameReady == true){
 
-            if (game.isMyTurn){
+            if (!game.isMyTurn){
                 "Tu turno"
             }else{
                 "Turno del rival"
@@ -67,38 +76,61 @@ fun Board(game : GameModel?){
         Text(text = "$status")
 
         Row() {
-            GameItem()
-            GameItem()
-            GameItem()
+            GameItem(game.board[0]){
+                onItemSelected(0)
+            }
+            GameItem(game.board[1]){
+                onItemSelected(1)
+            }
+            GameItem(game.board[2]){
+                onItemSelected(2)
+            }
         }
         Row() {
-            GameItem()
-            GameItem()
-            GameItem()
+            GameItem(game.board[3]){
+                onItemSelected(3)
+            }
+            GameItem(game.board[4]){
+                onItemSelected(4)
+            }
+            GameItem(game.board[5]){
+                onItemSelected(5)
+            }
         }
         Row() {
-            GameItem()
-            GameItem()
-            GameItem()
+            GameItem(game.board[6]){
+                onItemSelected(6)
+            }
+            GameItem(game.board[7]){
+                onItemSelected(7)
+            }
+            GameItem(game.board[8]){
+                onItemSelected(8)
+            }
         }
 
     }
 
 }
 
-@Preview
 @Composable
-fun GameItem(){
+fun GameItem(
+    playerType: PlayerType,
+    onItemSelected : () -> Unit
+){
 
     Box (
         modifier = Modifier
             .padding(12.dp)
             .size(64.dp)
-            .border(BorderStroke(2.dp, color = Color.Black)),
+            .border(BorderStroke(2.dp, color = Color.Black))
+            .clickable {
+                       onItemSelected()
+            },
         contentAlignment = Alignment.Center
     ){
 
-        Text(text = "X")
+        Text(text = playerType.symbol)
 
     }
 
