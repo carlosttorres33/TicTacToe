@@ -2,6 +2,7 @@ package com.carlostorres.tictactoe.ui.game
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -11,12 +12,15 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.carlostorres.tictactoe.ui.model.GameModel
 
 @Composable
 fun GameScreen(
@@ -32,22 +36,29 @@ fun GameScreen(
 
     }
 
-    Board()
+    val game : GameModel? by gameViewModel.game.collectAsState()
+
+    Board(game)
 
 }
 
-@Preview(showSystemUi = true)
 @Composable
-fun Board( viewModel: GameViewModel = hiltViewModel()){
+fun Board(game : GameModel?){
 
     Column (
         modifier = Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally
     ){
 
-        Text(text = "ID de partida")
+        Text(text = "ID de partida ${game?.gameId.orEmpty()}")
 
-        Text(text = "Es tu turno/ Esperando / Turno Rival")
+        val status = if (game?.isGameReady == true){
+            "Tu turno/ Turno Rival"
+        }else{
+            "Esperando por el jugador 2"
+        }
+
+        Text(text = "$status")
 
         Row() {
             GameItem()

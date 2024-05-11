@@ -10,16 +10,16 @@ import javax.inject.Inject
 
 
 class FirebaseService @Inject constructor(
-    private val reference : DatabaseReference
-){
+    private val reference: DatabaseReference
+) {
 
-    companion object{
+    companion object {
 
         private const val PATH = "games"
 
     }
 
-    fun createGame(gameData: GameData) : String {
+    fun createGame(gameData: GameData): String {
 
         val gameReference = reference.child(PATH).push()
         val key = gameReference.key
@@ -34,11 +34,21 @@ class FirebaseService @Inject constructor(
 
     }
 
-    fun joinToGame(gameId: String) : Flow<GameModel?> {
+    fun joinToGame(gameId: String): Flow<GameModel?> {
 
         return reference.database.reference.child("$PATH/$gameId").snapshots.map { dataSnapshot ->
 
             dataSnapshot.getValue(GameData::class.java)?.toModel()
+
+        }
+
+    }
+
+    fun updateGame(gameData: GameData) {
+
+        if (gameData.gameId != null) {
+
+            reference.child(PATH).child(gameData.gameId).setValue(gameData)
 
         }
 
