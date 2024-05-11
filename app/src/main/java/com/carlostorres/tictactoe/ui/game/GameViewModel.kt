@@ -24,6 +24,9 @@ class GameViewModel @Inject constructor(
     var _game = MutableStateFlow<GameModel?>(null)
     val game: StateFlow<GameModel?> = _game
 
+    private var _winner = MutableStateFlow<PlayerType?>(null)
+    val winner : StateFlow<PlayerType?> = _winner
+
     fun joinToGame(gameId: String, userId: String, owner: Boolean) {
 
         this.userId = userId
@@ -84,6 +87,8 @@ class GameViewModel @Inject constructor(
 
                 _game.value = result
 
+                verifyWin()
+
             }
 
         }
@@ -92,11 +97,11 @@ class GameViewModel @Inject constructor(
 
     private fun isMyTurn() = game.value?.playerTurn?.userId == userId
 
-    fun onItemSelected(position : Int) {
+    fun onItemSelected(position: Int) {
 
         val currentGame = _game.value ?: return
 
-        if (currentGame.isGameReady && currentGame.board[position] == PlayerType.Empty && isMyTurn()){
+        if (currentGame.isGameReady && currentGame.board[position] == PlayerType.Empty && isMyTurn()) {
 
             viewModelScope.launch {
 
@@ -116,15 +121,50 @@ class GameViewModel @Inject constructor(
 
     }
 
-    private fun getEnemyPlayer(): PlayerModel?{
+    private fun verifyWin(){
+
+        val board = _game.value?.board
+        if (board != null && board.size == 9){
+            when{
+                isGameWon(board, PlayerType.FirstPlayer) ->{
+                    _winner.value = PlayerType.FirstPlayer
+                }
+                isGameWon(board, PlayerType.SecondPlayer) ->{
+                    _winner.value = PlayerType.SecondPlayer
+                }
+            }
+        }
+    }
+
+    private fun isGameWon(board: List<PlayerType>, playerType: PlayerType) : Boolean {
+
+        return when {
+            //ROW
+            (board[0] == playerType && board[1] == playerType && board[2] == playerType) -> true
+            (board[3] == playerType && board[4] == playerType && board[5] == playerType) -> true
+            (board[6] == playerType && board[7] == playerType && board[8] == playerType) -> true
+            //Column
+            (board[0] == playerType && board[3] == playerType && board[6] == playerType) -> true
+            (board[1] == playerType && board[4] == playerType && board[7] == playerType) -> true
+            (board[2] == playerType && board[5] == playerType && board[8] == playerType) -> true
+            //Diagonals
+            (board[0] == playerType && board[4] == playerType && board[8] == playerType) -> true
+            (board[6] == playerType && board[4] == playerType && board[2] == playerType) -> true
+
+            else -> false
+        }
+
+    }
+
+    private fun getEnemyPlayer(): PlayerModel? {
 
         return if (game.value?.player1?.userId == userId) game.value?.player2 else game.value?.player1
 
     }
 
-    private fun getPlayer(): PlayerType?{
+    private fun getPlayer(): PlayerType? {
 
-        return when{
+        return when {
             (game.value?.player1?.userId == userId) -> PlayerType.FirstPlayer
             (game.value?.player2?.userId == userId) -> PlayerType.SecondPlayer
             else -> null

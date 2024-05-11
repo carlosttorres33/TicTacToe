@@ -30,81 +30,106 @@ fun GameScreen(
     gameId: String,
     userId: String,
     owner: Boolean
-){
+) {
 
-    LaunchedEffect(true){
+    LaunchedEffect(true) {
 
         gameViewModel.joinToGame(gameId, userId, owner)
 
     }
 
-    val game : GameModel? by gameViewModel.game.collectAsState()
+    val game: GameModel? by gameViewModel.game.collectAsState()
 
-    Board(game){ position ->
-        gameViewModel.onItemSelected(position)
+    val winner: PlayerType? by gameViewModel.winner.collectAsState()
+
+    if (winner != null) {
+
+        Box(
+            modifier = Modifier.fillMaxSize(),
+            contentAlignment = Alignment.Center
+        ){
+
+            val currentWiner = when(winner){
+                PlayerType.Empty -> ""
+                PlayerType.FirstPlayer -> "Player 1"
+                PlayerType.SecondPlayer -> "Player 2"
+                null -> "EMPATE"
+            }
+
+            Text("Ha ganado $currentWiner")
+
+        }
+
+    } else {
+
+        Board(game) { position ->
+            gameViewModel.onItemSelected(position)
+        }
+
     }
+
 
 }
 
 @Composable
 fun Board(
-    game : GameModel?,
-    onItemSelected : (Int) -> Unit
-){
+    game: GameModel?,
+    onItemSelected: (Int) -> Unit
+) {
 
     if (game == null) return
 
-    Column (
+    Column(
         modifier = Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally
-    ){
+    ) {
 
         Text(text = "ID de partida ${game.gameId.orEmpty()}")
 
-        val status = if (game.isGameReady == true){
+        val status = if (game.isGameReady == true) {
 
-            if (!game.isMyTurn){
+            if (!game.isMyTurn) {
                 "Tu turno"
-            }else{
+            } else {
                 "Turno del rival"
             }
 
-        }else{
+        } else {
             "Esperando por el jugador 2"
         }
 
         Text(text = "$status")
 
         Row() {
-            GameItem(game.board[0]){
+            GameItem(game.board[0]) {
                 onItemSelected(0)
             }
-            GameItem(game.board[1]){
+            GameItem(game.board[1]) {
                 onItemSelected(1)
             }
-            GameItem(game.board[2]){
+            GameItem(game.board[2]) {
                 onItemSelected(2)
             }
         }
         Row() {
-            GameItem(game.board[3]){
+            GameItem(game.board[3]) {
                 onItemSelected(3)
             }
-            GameItem(game.board[4]){
+            GameItem(game.board[4]) {
                 onItemSelected(4)
             }
-            GameItem(game.board[5]){
+            GameItem(game.board[5]) {
                 onItemSelected(5)
             }
         }
         Row() {
-            GameItem(game.board[6]){
+            GameItem(game.board[6]) {
                 onItemSelected(6)
             }
-            GameItem(game.board[7]){
+            GameItem(game.board[7]) {
                 onItemSelected(7)
             }
-            GameItem(game.board[8]){
+            GameItem(game.board[8]) {
                 onItemSelected(8)
             }
         }
@@ -116,19 +141,19 @@ fun Board(
 @Composable
 fun GameItem(
     playerType: PlayerType,
-    onItemSelected : () -> Unit
-){
+    onItemSelected: () -> Unit
+) {
 
-    Box (
+    Box(
         modifier = Modifier
             .padding(12.dp)
             .size(64.dp)
             .border(BorderStroke(2.dp, color = Color.Black))
             .clickable {
-                       onItemSelected()
+                onItemSelected()
             },
         contentAlignment = Alignment.Center
-    ){
+    ) {
 
         Text(text = playerType.symbol)
 
