@@ -30,7 +30,7 @@ class GameViewModel @Inject constructor(
 
         if (owner) {
 
-            joinGameLikeOwner(gameId)
+            join(gameId)
 
         } else {
 
@@ -65,28 +65,21 @@ class GameViewModel @Inject constructor(
 
             }
 
-            firebaseService.joinToGame(gameId).collect {
-
-                val result = it?.copy(
-                    isGameReady = it.player2 != null
-                )
-
-                _game.value = result
-
-            }
+            join(gameId)
 
         }
 
     }
 
-    private fun joinGameLikeOwner(gameId: String) {
+    private fun join(gameId: String) {
 
         viewModelScope.launch {
 
             firebaseService.joinToGame(gameId).collect {
 
                 val result = it?.copy(
-                    isGameReady = it.player2 != null
+                    isGameReady = it.player2 != null,
+                    isMyTurn = isMyTurn()
                 )
 
                 _game.value = result
@@ -96,5 +89,7 @@ class GameViewModel @Inject constructor(
         }
 
     }
+
+    private fun isMyTurn() = game.value?.playerTurn?.userId == userId
 
 }
