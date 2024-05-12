@@ -82,7 +82,7 @@ class GameViewModel @Inject constructor(
 
                 val result = it?.copy(
                     isGameReady = it.player2 != null,
-                    isMyTurn = isMyTurn()
+                    isMyTurn = isMyTurn(it.playerTurn)
                 )
 
                 _game.value = result
@@ -95,13 +95,13 @@ class GameViewModel @Inject constructor(
 
     }
 
-    private fun isMyTurn() = game.value?.playerTurn?.userId == userId
+    private fun isMyTurn(playerTurn : PlayerModel) = playerTurn.userId == userId
 
     fun onItemSelected(position: Int) {
 
         val currentGame = _game.value ?: return
 
-        if (currentGame.isGameReady && currentGame.board[position] == PlayerType.Empty && isMyTurn()) {
+        if (currentGame.isGameReady && currentGame.board[position] == PlayerType.Empty && isMyTurn(currentGame.playerTurn)) {
 
             viewModelScope.launch {
 

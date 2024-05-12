@@ -88,7 +88,7 @@ fun Board(
 
         val status = if (game.isGameReady == true) {
 
-            if (!game.isMyTurn) {
+            if (game.isMyTurn) {
                 "Tu turno"
             } else {
                 "Turno del rival"
